@@ -7,5 +7,37 @@
 <body>
   <h1>SkillPilot AI</h1>
   <p>Your AI-assisted guide to exploring tech careers.</p>
+
+  <h2>Get Your Study Plan</h2>
+
+  <label for="career">Choose a career:</label>
+<select id="career">
+    <option value="Data Science">Data Science</option>
+    <option value="Data Analyst">Data Analyst</option>
+    <option value="Backend Developer">Backend Developer</option>
+  </select>
+
+  <br><br>
+
+  <label for="days">Days available:</label>
+  <input type="number" id="days" value="3" min="1" max="7">
+
+  <br><br>
+
+  <button id="generateBtn">Generate My Plan</button>
+
+  <div id="result"></div>
+
+  <script>
+    const button = document.getElementById("generateBtn");
+    const resultBox = document.getElementById("result");
+
+    button.addEventListener("click", function () {
+      const career = document.getElementById("career").value;
+      const days = document.getElementById("days").value;
+
+      resultBox.textContent = "Fake plan for " + career + " over " + days + " days (this will be real AI output soon).";
+    });
+  </script>
 </body>
 </html>
