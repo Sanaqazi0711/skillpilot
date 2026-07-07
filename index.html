@@ -20,7 +20,7 @@
   <br><br>
 
   <label for="hours">Hours per day you can study:</label>
-  <input type="number" id="hours" value="2" min="1" max="12">
+  <input type="number" id="hours" value="2" min="1" max="8">
 
   <br><br>
 
@@ -47,7 +47,30 @@
         });
 
         const data = await response.json();
-        resultBox.textContent = data.plan ? data.plan : "Something went wrong. Please try again.";
+
+        if (data.plan) {
+          resultBox.innerHTML = "";
+
+          const header = document.createElement("h3");
+          header.textContent = career + " Plan (" + data.totalMonths + " months)";
+          resultBox.appendChild(header);
+
+          data.plan.months.forEach(function (month) {
+            const monthHeading = document.createElement("h4");
+            monthHeading.textContent = "Month " + month.monthNumber + ": " + month.title;
+            resultBox.appendChild(monthHeading);
+
+            const weekList = document.createElement("ul");
+            month.weeks.forEach(function (week) {
+              const item = document.createElement("li");
+              item.innerHTML = "<strong>Week " + week.weekNumber + " – " + week.theme + ":</strong> " + week.description;
+              weekList.appendChild(item);
+            });
+            resultBox.appendChild(weekList);
+          });
+        } else {
+          resultBox.textContent = "Something went wrong. Please try again.";
+        }
       } catch (error) {
         resultBox.textContent = "Something went wrong. Please try again.";
       }
