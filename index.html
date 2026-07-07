@@ -2,31 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkillPilot AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>SkillPilot AI</h1>
-  <p>Your AI-assisted guide to exploring tech careers.</p>
+  <div class="container">
+    <h1>SkillPilot AI</h1>
+    <p class="subtitle">Your AI-assisted guide to exploring tech careers.</p>
 
-  <h2>Get Your Study Plan</h2>
+    <div class="card">
+      <h2 style="margin-top:0;">Get Your Study Plan</h2>
 
-  <label for="career">Choose a career:</label>
-  <select id="career">
-    <option value="Data Science">Data Science</option>
-    <option value="Data Analyst">Data Analyst</option>
-    <option value="Backend Developer">Backend Developer</option>
-  </select>
+      <label for="career">Choose a career</label>
+      <select id="career">
+        <option value="Data Science">Data Science</option>
+        <option value="Data Analyst">Data Analyst</option>
+        <option value="Backend Developer">Backend Developer</option>
+      </select>
 
-  <br><br>
+      <label for="hours">Hours per day you can study</label>
+      <input type="number" id="hours" value="2" min="1" max="8">
 
-  <label for="hours">Hours per day you can study:</label>
-  <input type="number" id="hours" value="2" min="1" max="8">
+      <button id="generateBtn">Generate My Plan</button>
+    </div>
 
-  <br><br>
-
-  <button id="generateBtn">Generate My Plan</button>
-
-  <div id="result"></div>
+    <div class="card" id="result"></div>
+  </div>
 
   <script>
     const button = document.getElementById("generateBtn");
@@ -36,7 +40,7 @@
       const career = document.getElementById("career").value;
       const hours = document.getElementById("hours").value;
 
-      resultBox.textContent = "Generating your plan...";
+      resultBox.innerHTML = "Generating your plan...";
       button.disabled = true;
 
       try {
