@@ -5,7 +5,35 @@ export default async function handler(req, res) {
 
   const { career, hours } = req.body;
 
-  const prompt = `Create a 7-day weekly study plan for someone learning ${career}, studying ${hours} hours per day. Format as exactly: "Day 1: [topic]", "Day 2: [topic]", etc. One line per day. No explanations, no extra text, no markdown.`;
+  const totalHoursNeeded = {
+    "Data Science": 400,
+    "Data Analyst": 250,
+    "Backend Developer": 300
+  };
+
+  const totalHours = totalHoursNeeded[career] || 300;
+  const hoursPerDay = Number(hours);
+  const totalDays = Math.ceil(totalHours / hoursPerDay);
+  const totalMonths = Math.max(1, Math.ceil(totalDays / 30));
+
+  const prompt = `Create a study plan for someone learning ${career}, who can study ${hoursPerDay} hours per day. The plan should span exactly ${totalMonths} months.
+
+Break the plan into months. Each month should be broken into 4 weekly themes. Each week needs a short theme (a few words) and a 1-2 sentence description of what to focus on that week.
+
+Return ONLY valid JSON, with no markdown formatting, no code fences, no extra text before or after. Use exactly this structure:
+
+{
+  "totalMonths": ${totalMonths},
+  "months": [
+    {
+      "monthNumber": 1,
+      "title": "short phase title for this month",
+      "weeks": [
+        { "weekNumber": 1, "theme": "short theme", "description": "1-2 sentence description" }
+      ]
+    }
+  ]
+}`;
 
   try {
     const geminiRes = await fetch(
@@ -21,9 +49,13 @@ export default async function handler(req, res) {
     );
 
     const data = await geminiRes.json();
-    const planText = data.candidates[0].content.parts[0].text;
+    let planText = data.candidates[0].content.parts[0].text;
 
-    res.status(200).json({ plan: planText });
+    planText = planText.replace(/```json/g, '').replace(/```/g, '').trim();
+
+    const planJson = JSON.parse(planText);
+
+    res.status(200).json({ plan: planJson, totalMonths: totalMonths });
   } catch (error) {
     res.status(500).json({ error: 'Something went wrong generating the plan.' });
   }
