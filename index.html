@@ -32,11 +32,27 @@
     const button = document.getElementById("generateBtn");
     const resultBox = document.getElementById("result");
 
-    button.addEventListener("click", function () {
+    button.addEventListener("click", async function () {
       const career = document.getElementById("career").value;
       const hours = document.getElementById("hours").value;
 
-      resultBox.textContent = "Fake weekly plan for " + career + " at " + hours + " hours/day (this will be real AI output soon).";
+      resultBox.textContent = "Generating your plan...";
+      button.disabled = true;
+
+      try {
+        const response = await fetch("/api/plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ career: career, hours: hours })
+        });
+
+        const data = await response.json();
+        resultBox.textContent = data.plan ? data.plan : "Something went wrong. Please try again.";
+      } catch (error) {
+        resultBox.textContent = "Something went wrong. Please try again.";
+      }
+
+      button.disabled = false;
     });
   </script>
 </body>
