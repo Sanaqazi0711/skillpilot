@@ -10,34 +10,197 @@
 </head>
 <body>
   <div class="container">
-    <h1>SkillPilot AI</h1>
-    <p class="subtitle">Your AI-assisted guide to exploring tech careers.</p>
 
-    <div class="card">
-      <h2 style="margin-top:0;">Get Your Study Plan</h2>
-
-      <label for="career">Choose a career</label>
-      <select id="career">
-        <option value="Data Science">Data Science</option>
-        <option value="Data Analyst">Data Analyst</option>
-        <option value="Backend Developer">Backend Developer</option>
-      </select>
-
-      <label for="hours">Hours per day you can study</label>
-      <input type="number" id="hours" value="2" min="1" max="8">
-
-      <button id="generateBtn">Generate My Plan</button>
+    <div class="hero">
+      <h1>SkillPilot AI</h1>
+      <p class="subtitle">Your AI-assisted guide to exploring tech careers.</p>
+      <p class="hero-text">Pick a career, tell it how much time you have, and get a study plan built from real, researched curricula — plus curated free resources, certifications, and project ideas to go with it.</p>
+      <a href="#planner" class="cta-button">Generate My Study Plan</a>
     </div>
 
-    <div class="card" id="result"></div>
+    <nav class="career-switcher" id="careerSwitcher">
+      <button class="career-pill active" data-career="Data Science">Data Science</button>
+      <button class="career-pill" data-career="Data Analyst">Data Analyst</button>
+      <button class="career-pill" data-career="Backend Developer">Backend Developer</button>
+    </nav>
+
+    <section id="planner" class="card">
+      <h2>Get Your Study Plan</h2>
+      <label for="hours">Hours per day you can study</label>
+      <input type="number" id="hours" value="2" min="1" max="8">
+      <button id="generateBtn">Generate My Plan</button>
+      <div id="result"></div>
+    </section>
+
+    <section id="resources" class="card">
+      <h2>Resources</h2>
+      <div id="resourcesContent"></div>
+    </section>
+
+    <section id="certifications" class="card">
+      <h2>Certifications</h2>
+      <div id="certificationsContent"></div>
+    </section>
+
+    <section id="projects" class="card">
+      <h2>Project Ideas</h2>
+      <div id="projectsContent"></div>
+    </section>
+
   </div>
 
   <script>
-    const button = document.getElementById("generateBtn");
+    const CAREER_CONTENT = {
+      "Data Science": {
+        resources: {
+          web: [
+            { name: "Kaggle Learn", url: "https://www.kaggle.com/learn", desc: "Free bite-sized courses in Python, SQL, and Machine Learning with real datasets." },
+            { name: "scikit-learn Documentation", url: "https://scikit-learn.org/stable/getting_started.html", desc: "Official docs for the most widely used Python machine learning library." }
+          ],
+          youtube: [
+            { name: "StatQuest with Josh Starmer", url: "https://www.youtube.com/@statquest", desc: "Statistics and machine learning concepts explained visually and simply." },
+            { name: "3Blue1Brown", url: "https://www.youtube.com/@3blue1brown", desc: "Intuitive visual explanations of linear algebra and calculus." }
+          ],
+          practice: [
+            { name: "Kaggle Datasets & Competitions", url: "https://www.kaggle.com/datasets", desc: "Real datasets to practice exploratory analysis and build ML projects." },
+            { name: "Khan Academy — Statistics", url: "https://www.khanacademy.org/math/statistics-probability", desc: "Free practice exercises for core statistics and probability." }
+          ]
+        },
+        certifications: [
+          { name: "Kaggle Learn Certificates", desc: "Free micro-course certificates in Python, Pandas, and Machine Learning." },
+          { name: "Great Learning Academy — Data Science", desc: "Free beginner courses with completion certificates covering Python, ML, and visualization." },
+          { name: "HP LIFE — Data Science & Analytics", desc: "A short, free introductory course with certificate." }
+        ],
+        projects: [
+          { level: "Beginner", title: "Exploratory analysis on a Kaggle dataset", desc: "Clean a public dataset and create visualizations that reveal patterns." },
+          { level: "Intermediate", title: "Build a classification model", desc: "Use scikit-learn to predict an outcome and evaluate its accuracy." },
+          { level: "Advanced", title: "End-to-end ML mini-project", desc: "Combine EDA, feature engineering, and model comparison into one report." }
+        ]
+      },
+      "Data Analyst": {
+        resources: {
+          web: [
+            { name: "Microsoft Learn — Excel", url: "https://learn.microsoft.com/en-us/training/", desc: "Free official courses covering Excel formulas, pivot tables, and data tools." },
+            { name: "SQLBolt", url: "https://sqlbolt.com", desc: "Interactive, browser-based lessons for learning SQL step by step." }
+          ],
+          youtube: [
+            { name: "Leila Gharani", url: "https://www.youtube.com/@LeilaGharani", desc: "Hands-on Excel and data analysis tutorials with real-world examples." }
+          ],
+          practice: [
+            { name: "Mode SQL Tutorial", url: "https://mode.com/sql-tutorial", desc: "Practice real SQL queries directly in the browser." },
+            { name: "Kaggle Datasets", url: "https://www.kaggle.com/datasets", desc: "Free datasets to practice cleaning and analysis." }
+          ]
+        },
+        certifications: [
+          { name: "Kaggle Learn Certificates", desc: "Free certificates for Python, SQL, and data visualization micro-courses." },
+          { name: "HackerRank SQL Certification", desc: "Free skill certification badge you can add directly to LinkedIn." },
+          { name: "Great Learning Academy — Data Analytics", desc: "Free beginner courses with certificates covering Excel, SQL, and Tableau." }
+        ],
+        projects: [
+          { level: "Beginner", title: "Sales dataset analysis", desc: "Analyze a sample sales dataset in Excel or Sheets and summarize key trends." },
+          { level: "Intermediate", title: "Customer behavior analysis with SQL", desc: "Write SQL queries to segment customers and find purchasing patterns." },
+          { level: "Advanced", title: "Interactive dashboard project", desc: "Build a dashboard in Power BI or Tableau that tells a clear data story." }
+        ]
+      },
+      "Backend Developer": {
+        resources: {
+          web: [
+            { name: "freeCodeCamp", url: "https://www.freecodecamp.org", desc: "Free, project-based curriculum including a full Backend Development certification." },
+            { name: "MDN Web Docs — HTTP", url: "https://developer.mozilla.org/en-US/docs/Web/HTTP", desc: "The definitive free reference for how HTTP and REST APIs work." }
+          ],
+          youtube: [
+            { name: "freeCodeCamp YouTube", url: "https://www.youtube.com/@freecodecamp", desc: "Full-length free courses on backend languages, databases, and APIs." },
+            { name: "CodeWithHarry", url: "https://www.youtube.com/@CodeWithHarry", desc: "Beginner-friendly tutorials covering backend fundamentals." }
+          ],
+          practice: [
+            { name: "roadmap.sh — Backend", url: "https://roadmap.sh/backend", desc: "A visual, checklist-style roadmap to track your backend learning progress." },
+            { name: "HackerRank", url: "https://www.hackerrank.com", desc: "Practice problems and free skill certifications." }
+          ]
+        },
+        certifications: [
+          { name: "freeCodeCamp — Back End Development and APIs", desc: "A fully free, project-based certification recognized in the dev community." },
+          { name: "HackerRank Skill Certifications", desc: "Free, verified badges in SQL, Problem Solving, and specific languages." },
+          { name: "Great Learning Academy — Programming", desc: "Free beginner courses with certificates covering programming fundamentals." }
+        ],
+        projects: [
+          { level: "Beginner", title: "REST API for a recipe or book collection", desc: "Build basic CRUD endpoints using a simple framework." },
+          { level: "Intermediate", title: "Authentication system", desc: "Add signup/login with JWT tokens and protect routes based on user roles." },
+          { level: "Advanced", title: "Deployed full backend service", desc: "Add caching, connect a real database, and deploy it live on a free host." }
+        ]
+      }
+    };
+
+    let selectedCareer = "Data Science";
+
+    const pills = document.querySelectorAll(".career-pill");
     const resultBox = document.getElementById("result");
+    const resourcesContent = document.getElementById("resourcesContent");
+    const certificationsContent = document.getElementById("certificationsContent");
+    const projectsContent = document.getElementById("projectsContent");
+
+    function renderResources() {
+      resourcesContent.innerHTML = "";
+      const groups = [
+        { key: "web", label: "Web Tutorials & Docs" },
+        { key: "youtube", label: "YouTube Channels" },
+        { key: "practice", label: "Practice Sites" }
+      ];
+      groups.forEach(function (group) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "resource-group";
+        const heading = document.createElement("h4");
+        heading.textContent = group.label;
+        wrapper.appendChild(heading);
+
+        CAREER_CONTENT[selectedCareer].resources[group.key].forEach(function (res) {
+          const item = document.createElement("div");
+          item.className = "resource-item";
+          item.innerHTML = "<a href='" + res.url + "' target='_blank' rel='noopener'>" + res.name + "</a><p>" + res.desc + "</p>";
+          wrapper.appendChild(item);
+        });
+        resourcesContent.appendChild(wrapper);
+      });
+    }
+
+    function renderCertifications() {
+      certificationsContent.innerHTML = "";
+      CAREER_CONTENT[selectedCareer].certifications.forEach(function (cert) {
+        const item = document.createElement("div");
+        item.className = "cert-item";
+        item.innerHTML = "<h4>" + cert.name + "</h4><p>" + cert.desc + "</p>";
+        certificationsContent.appendChild(item);
+      });
+    }
+
+    function renderProjects() {
+      projectsContent.innerHTML = "";
+      CAREER_CONTENT[selectedCareer].projects.forEach(function (proj) {
+        const item = document.createElement("div");
+        item.className = "project-item";
+        item.innerHTML = "<h4>" + proj.title + " <span class='level-badge " + proj.level + "'>" + proj.level + "</span></h4><p>" + proj.desc + "</p>";
+        projectsContent.appendChild(item);
+      });
+    }
+
+    function renderAllSections() {
+      renderResources();
+      renderCertifications();
+      renderProjects();
+    }
+
+    pills.forEach(function (pill) {
+      pill.addEventListener("click", function () {
+        pills.forEach(function (p) { p.classList.remove("active"); });
+        pill.classList.add("active");
+        selectedCareer = pill.dataset.career;
+        resultBox.innerHTML = "";
+        renderAllSections();
+      });
+    });
+
+    const button = document.getElementById("generateBtn");
 
     button.addEventListener("click", async function () {
-      const career = document.getElementById("career").value;
       const hours = document.getElementById("hours").value;
 
       resultBox.innerHTML = "Generating your plan...";
@@ -47,30 +210,22 @@
         const response = await fetch("/api/plan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ career: career, hours: hours })
+          body: JSON.stringify({ career: selectedCareer, hours: hours })
         });
 
         const data = await response.json();
 
         if (data.plan) {
           resultBox.innerHTML = "";
-
           const header = document.createElement("h3");
-          header.textContent = career + " Plan (" + data.totalMonths + " months)";
+          header.textContent = selectedCareer + " Plan (" + data.plan.totalDays + " days total)";
           resultBox.appendChild(header);
 
-          data.plan.months.forEach(function (month) {
-            const monthHeading = document.createElement("h4");
-            monthHeading.textContent = "Month " + month.monthNumber + ": " + month.title;
-            resultBox.appendChild(monthHeading);
-
-            const weekList = document.createElement("ul");
-            month.weeks.forEach(function (week) {
-              const item = document.createElement("li");
-              item.innerHTML = "<strong>Week " + week.weekNumber + " – " + week.theme + ":</strong> " + week.description;
-              weekList.appendChild(item);
-            });
-            resultBox.appendChild(weekList);
+          data.plan.topics.forEach(function (topic) {
+            const item = document.createElement("div");
+            item.className = "topic-item";
+            item.innerHTML = "<h4>Topic " + topic.topicNumber + ": " + topic.title + " <span class='days-badge'>" + topic.days + " days</span></h4><p>" + topic.description + "</p>";
+            resultBox.appendChild(item);
           });
         } else {
           resultBox.textContent = "Something went wrong. Please try again.";
@@ -81,6 +236,8 @@
 
       button.disabled = false;
     });
+
+    renderAllSections();
   </script>
 </body>
 </html>
